@@ -1,9 +1,5 @@
 from fastapi import FastAPI
-
+from app.auth.router import router as router_auth
 
 app = FastAPI()
-
-
-@app.get('/')
-async def main():
-    return 'hello world'
+app.include_router(router_auth)

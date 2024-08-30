@@ -9,7 +9,8 @@ from alembic import context
 
 from app.config import settings
 from app.models import Base
-
+from app.user.models import User
+from app.auth.models import RefreshTokenActive
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
