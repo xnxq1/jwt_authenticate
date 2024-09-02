@@ -39,16 +39,3 @@ async def refresh(request: Request, response: Response):
     JWTCookies.set_cookie_jwt(response, 'access', access_token)
 
 
-@router.get('/temp1', dependencies=[Depends(get_curr_user)])
-async def temp1():
-    async with async_sessionfactory() as session:
-        query = select(RefreshTokenActive)
-        result = await session.execute(query)
-        return result.scalars().all()
-
-@router.get('/temp2')
-async def temp2():
-    async with async_sessionfactory() as session:
-        query = select(User)
-        result = await session.execute(query)
-        return result.scalars().all()
