@@ -1,22 +1,23 @@
-from datetime import datetime, timedelta
 
-from jose import jwt, JWTError
+from fastapi import Request
 
-from app.config import settings
-from fastapi import Response, Request
-
-
-from passlib.context import CryptContext
+from app.auth.jwt import JWTCookies, JWT
+from app.user.dao import DaoUser
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+async def get_curr_user(request: Request):
+    access = JWTCookies.get_cookie_jwt(request, 'access')
+    if access is None:
+        raise ValueError()
 
-class Hasher:
+    payload = JWT.decode_token(access)
+    JWT.check_expire(payload)
+    sub = payload['sub']
+    if not sub:
+        raise ValueError()
 
-    @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
+    user = await DaoUser.get_user_by_id(int(sub))
+    if not user:
+        raise ValueError()
+    return user
 
-    @staticmethod
-    def get_password_hash(password: str) -> str:
-        return pwd_context.hash(password)

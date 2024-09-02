@@ -23,3 +23,11 @@ class DaoUser:
             await session.commit()
             return result.scalar_one_or_none()
 
+    @classmethod
+    async def get_user_by_id(cls, user_id: int) -> __model | None:
+        async with async_sessionfactory() as session:
+            query = select(cls.__model).where(cls.__model.id == user_id)
+            result = await session.execute(query)
+            await session.commit()
+            return result.scalar_one_or_none()
+
